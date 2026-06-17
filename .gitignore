@@ -1,0 +1,41 @@
+# Python caches and local environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+
+# Local secrets
+.env
+*.env
+secrets.*
+
+# Downloaded public benchmark data and raw model outputs
+data/
+outputs/
+
+# Local LaTeX build artifacts
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex.gz
+*.toc
+
+# Template sample/support files not needed for the manuscript repository
+sn-article-template/sn-article.pdf
+sn-article-template/sn-article.tex
+sn-article-template/sn-bibliography.bib
+sn-article-template/user-manual.pdf
+sn-article-template/fig.eps
+sn-article-template/empty.eps
+
+# Keep final manuscript sources and figures tracked
+!sn-article-template/deepseek_pathrep_bmc.tex
+!sn-article-template/deepseek_pathrep_bmc.bib
+!sn-article-template/sn-jnl.cls
+!sn-article-template/bst/
+!sn-article-template/figures/

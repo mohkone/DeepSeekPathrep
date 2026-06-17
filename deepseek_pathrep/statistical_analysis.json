@@ -1,0 +1,175 @@
+{
+  "bootstrap_iterations": 2000,
+  "seed": 2026,
+  "runs": [
+    {
+      "key": "cancer_flash",
+      "task": "Cancer type",
+      "method": "DeepSeek V4 Flash",
+      "n": 952,
+      "accuracy": 0.9800420168067226,
+      "accuracy_ci_low": 0.9695378151260504,
+      "accuracy_ci_high": 0.9884453781512605,
+      "macro_f1": 0.977832191459991,
+      "macro_f1_ci_low": 0.9660219812601013,
+      "macro_f1_ci_high": 0.9867286933994807,
+      "model_errors": 0
+    },
+    {
+      "key": "cancer_pro",
+      "task": "Cancer type",
+      "method": "DeepSeek V4 Pro",
+      "n": 952,
+      "accuracy": 0.976890756302521,
+      "accuracy_ci_low": 0.9663865546218487,
+      "accuracy_ci_high": 0.9863445378151261,
+      "macro_f1": 0.9684596286096652,
+      "macro_f1_ci_low": 0.9393632442954236,
+      "macro_f1_ci_high": 0.9826618088935485,
+      "model_errors": 0
+    },
+    {
+      "key": "stage_flash",
+      "task": "AJCC stage",
+      "method": "DeepSeek V4 Flash",
+      "n": 594,
+      "accuracy": 0.8164983164983165,
+      "accuracy_ci_low": 0.7845117845117845,
+      "accuracy_ci_high": 0.8468013468013468,
+      "macro_f1": 0.7841102557633117,
+      "macro_f1_ci_low": 0.7421135812296485,
+      "macro_f1_ci_high": 0.8201432587250639,
+      "model_errors": 0
+    },
+    {
+      "key": "stage_pro",
+      "task": "AJCC stage",
+      "method": "DeepSeek V4 Pro",
+      "n": 594,
+      "accuracy": 0.8097643097643098,
+      "accuracy_ci_low": 0.7760942760942761,
+      "accuracy_ci_high": 0.8400673400673401,
+      "macro_f1": 0.6287754337016983,
+      "macro_f1_ci_low": 0.5976724869840464,
+      "macro_f1_ci_high": 0.6573086094089856,
+      "model_errors": 14
+    },
+    {
+      "key": "prog_zero",
+      "task": "Prognosis",
+      "method": "DeepSeek zero-shot",
+      "n": 100,
+      "accuracy": 0.53,
+      "accuracy_ci_low": 0.44,
+      "accuracy_ci_high": 0.63,
+      "macro_f1": 0.5083167695365625,
+      "macro_f1_ci_low": 0.4114458169424418,
+      "macro_f1_ci_high": 0.6033174715186653,
+      "model_errors": 0
+    },
+    {
+      "key": "prog_fewshot",
+      "task": "Prognosis",
+      "method": "DeepSeek 8-shot",
+      "n": 100,
+      "accuracy": 0.57,
+      "accuracy_ci_low": 0.47,
+      "accuracy_ci_high": 0.67,
+      "macro_f1": 0.5647332725984411,
+      "macro_f1_ci_low": 0.4664713882205252,
+      "macro_f1_ci_high": 0.6598639455782314,
+      "model_errors": 0
+    },
+    {
+      "key": "prog_tfidf_text",
+      "task": "Prognosis",
+      "method": "TF-IDF text-only logistic regression",
+      "n": 952,
+      "accuracy": 0.8571428571428571,
+      "accuracy_ci_low": 0.8350840336134455,
+      "accuracy_ci_high": 0.8792016806722689,
+      "macro_f1": 0.8543425434254341,
+      "macro_f1_ci_low": 0.8312447416095624,
+      "macro_f1_ci_high": 0.876418771821076,
+      "model_errors": 0
+    },
+    {
+      "key": "prog_deepseek_assisted",
+      "task": "Prognosis",
+      "method": "TF-IDF + structured fields + DeepSeek variables",
+      "n": 952,
+      "accuracy": 0.8434873949579832,
+      "accuracy_ci_low": 0.8203781512605042,
+      "accuracy_ci_high": 0.8665966386554622,
+      "macro_f1": 0.839448196553945,
+      "macro_f1_ci_low": 0.8166048420335825,
+      "macro_f1_ci_high": 0.8629686074117336,
+      "model_errors": 0
+    }
+  ],
+  "comparisons": [
+    {
+      "name": "Cancer type: Flash vs Pro",
+      "a": "cancer_flash",
+      "b": "cancer_pro",
+      "n": 952,
+      "accuracy_delta": 0.0031512605042016695,
+      "accuracy_delta_ci_low": -0.003151260504201672,
+      "accuracy_delta_ci_high": 0.00945378151260512,
+      "accuracy_bootstrap_p": 0.418,
+      "macro_f1_delta": 0.009372562850325838,
+      "macro_f1_delta_ci_low": -0.004751077294575484,
+      "macro_f1_delta_ci_high": 0.036319360536559805,
+      "macro_f1_bootstrap_p": 0.233,
+      "mcnemar": {
+        "a_correct_b_wrong": 6,
+        "a_wrong_b_correct": 3,
+        "discordant": 9,
+        "p_value": 0.5078125
+      },
+      "interpretation": "Positive delta favors Flash."
+    },
+    {
+      "name": "AJCC stage: Flash vs Pro",
+      "a": "stage_flash",
+      "b": "stage_pro",
+      "n": 594,
+      "accuracy_delta": 0.006734006734006703,
+      "accuracy_delta_ci_low": -0.01683501683501676,
+      "accuracy_delta_ci_high": 0.03030303030303028,
+      "accuracy_bootstrap_p": 0.611,
+      "macro_f1_delta": 0.15533482206161342,
+      "macro_f1_delta_ci_low": 0.12340820289933475,
+      "macro_f1_delta_ci_high": 0.1843430756674951,
+      "macro_f1_bootstrap_p": 0.0,
+      "mcnemar": {
+        "a_correct_b_wrong": 28,
+        "a_wrong_b_correct": 24,
+        "discordant": 52,
+        "p_value": 0.6778086391424605
+      },
+      "interpretation": "Positive delta favors Flash."
+    },
+    {
+      "name": "Prognosis: TF-IDF text-only vs DeepSeek-assisted ML",
+      "a": "prog_tfidf_text",
+      "b": "prog_deepseek_assisted",
+      "n": 952,
+      "accuracy_delta": 0.013655462184873901,
+      "accuracy_delta_ci_low": -0.006302521008403339,
+      "accuracy_delta_ci_high": 0.03361344537815125,
+      "accuracy_bootstrap_p": 0.188,
+      "macro_f1_delta": 0.014894346871489161,
+      "macro_f1_delta_ci_low": -0.004735389330703904,
+      "macro_f1_delta_ci_high": 0.034925679582372464,
+      "macro_f1_bootstrap_p": 0.149,
+      "mcnemar": {
+        "a_correct_b_wrong": 54,
+        "a_wrong_b_correct": 41,
+        "discordant": 95,
+        "p_value": 0.21805368187049903
+      },
+      "interpretation": "Positive delta favors TF-IDF text-only."
+    }
+  ]
+}
