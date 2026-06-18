@@ -1,8 +1,8 @@
-# DeepSeek for Pathology Report Understanding: Strengths and Limitations Across Extraction, Staging, and Prognosis Tasks
+# DeepSeek for Pathology Report Understanding: A Benchmark Study of Cancer Type Extraction, AJCC Staging, and Prognosis Prediction
 
 ## Title Page
 
-**Title:** DeepSeek for Pathology Report Understanding: Strengths and Limitations Across Extraction, Staging, and Prognosis Tasks
+**Title:** DeepSeek for Pathology Report Understanding: A Benchmark Study of Cancer Type Extraction, AJCC Staging, and Prognosis Prediction
 
 **Short title:** DeepSeek pathology report understanding
 

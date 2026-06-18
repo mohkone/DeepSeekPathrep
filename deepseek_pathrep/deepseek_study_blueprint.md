@@ -2,7 +2,7 @@
 
 Working title:
 
-DeepSeek for Pathology Report Understanding: Strengths and Limitations Across Extraction, Staging, and Prognosis Tasks
+DeepSeek for Pathology Report Understanding: A Benchmark Study of Cancer Type Extraction, AJCC Staging, and Prognosis Prediction
 
 ## Research Question
 
