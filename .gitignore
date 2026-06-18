@@ -25,17 +25,5 @@ outputs/
 *.synctex.gz
 *.toc
 
-# Template sample/support files not needed for the manuscript repository
-sn-article-template/sn-article.pdf
-sn-article-template/sn-article.tex
-sn-article-template/sn-bibliography.bib
-sn-article-template/user-manual.pdf
-sn-article-template/fig.eps
-sn-article-template/empty.eps
-
-# Keep final manuscript sources and figures tracked
-!sn-article-template/deepseek_pathrep_bmc.tex
-!sn-article-template/deepseek_pathrep_bmc.bib
-!sn-article-template/sn-jnl.cls
-!sn-article-template/bst/
-!sn-article-template/figures/
+# Local LaTeX/BMC submission folder
+sn-article-template/

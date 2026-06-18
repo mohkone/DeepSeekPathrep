@@ -1,6 +1,6 @@
 # DeepSeekPathrep
 
-This repository contains code and manuscript files for:
+This repository contains code and reproducible analysis files for:
 
 **DeepSeek for pathology report understanding: strengths and limitations across extraction, staging, and prognosis tasks**
 
@@ -14,7 +14,22 @@ The project benchmarks DeepSeek on PathRep-Bench style TCGA pathology report tas
 ## Repository Layout
 
 - `deepseek_pathrep/`: Python scripts, prompts, result summaries, statistical analysis, and manuscript draft.
-- `sn-article-template/`: BMC/Springer Nature LaTeX manuscript source, bibliography, class file, bibliography styles, and submission figures.
+
+The BMC/Springer Nature LaTeX submission folder is maintained locally and is not tracked in this repository.
+
+## Archive
+
+GitHub repository:
+
+```text
+https://github.com/mohkone/DeepSeekPathrep
+```
+
+Zenodo archive:
+
+```text
+https://doi.org/10.5281/zenodo.20753000
+```
 
 Raw benchmark CSV files and raw model-output JSONL files are intentionally not tracked. The data can be prepared from the public PathRep-Bench repository:
 
@@ -24,16 +39,10 @@ python .\deepseek_pathrep\prepare_pathrep_data.py
 
 ## Manuscript
 
-Main BMC-formatted LaTeX source:
+Main Markdown manuscript draft:
 
 ```text
-sn-article-template/deepseek_pathrep_bmc.tex
-```
-
-Figures are stored in:
-
-```text
-sn-article-template/figures/
+deepseek_pathrep/manuscript_draft.md
 ```
 
 ## Reproducibility
