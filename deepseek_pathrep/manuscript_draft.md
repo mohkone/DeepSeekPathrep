@@ -336,8 +336,8 @@ Not applicable.
 1. Saluja R, Rosenthal J, Windon A, et al. Cancer type, stage and prognosis assessment from pathology reports using LLMs. Scientific Reports. 2025;15:27300. doi:10.1038/s41598-025-10709-4.
 2. PathRep-Bench project repository. https://github.com/rachitsaluja/PathRep-Bench. Accessed 19 Jun 2026.
 3. Rosenthal laboratory TCGA pathology notes dataset. https://huggingface.co/datasets/rosenthal/tcga-path-notes. Accessed 19 Jun 2026.
-4. Liu J, Lichtenberg T, Hoadley KA, et al. An integrated TCGA pan-cancer clinical data resource to drive high-quality survival outcome analytics. Cell. 2018;173:400-416.e11.
-5. The Cancer Genome Atlas Research Network, Weinstein JN, Collisson EA, Mills GB, Shaw KRM, Ozenberger BA, et al. The Cancer Genome Atlas Pan-Cancer analysis project. Nature Genetics. 2013;45:1113-1120.
+4. Liu J, Lichtenberg T, Hoadley KA, et al. An integrated TCGA pan-cancer clinical data resource to drive high-quality survival outcome analytics. Cell. 2018;173:400-416.e11. doi:10.1016/j.cell.2018.02.052.
+5. The Cancer Genome Atlas Research Network, Weinstein JN, Collisson EA, Mills GB, Shaw KRM, Ozenberger BA, et al. The Cancer Genome Atlas Pan-Cancer analysis project. Nature Genetics. 2013;45:1113-1120. doi:10.1038/ng.2764.
 6. DeepSeek API documentation. https://api-docs.deepseek.com/. Accessed 19 Jun 2026.
 7. DeepSeek API pricing documentation. https://api-docs.deepseek.com/quick_start/pricing. Accessed 19 Jun 2026.
 8. Pedregosa F, Varoquaux G, Gramfort A, Michel V, Thirion B, Grisel O, et al. Scikit-learn: machine learning in Python. Journal of Machine Learning Research. 2011;12:2825-2830.
