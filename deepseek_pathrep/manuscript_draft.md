@@ -6,11 +6,11 @@
 
 **Short title:** DeepSeek pathology report understanding
 
-**Authors:** [Author names to be added]
+**Authors:** Mohamed Kone1, Shulin Wang1*, Gaoussou Haidara1
 
-**Affiliations:** [Institutional affiliations to be added]
+**Affiliations:** 1*School of Computer Science and Engineering, Hunan University, Changsha, China.
 
-**Corresponding author:** [Name and email to be added]
+**Corresponding author:** Shulin Wang. E-mail: books@hnu.edu.cn.
 
 ## Abstract
 
@@ -317,19 +317,19 @@ The public benchmark data were obtained from the PathRep-Bench project and TCGA-
 
 ### Competing Interests
 
-The authors declare no competing interests. [Revise if needed.]
+The authors declare no competing interests.
 
 ### Funding
 
-[Funding statement to be added.]
+The authors received no specific funding for this work.
 
 ### Authors' Contributions
 
-[Author contribution statement to be added.]
+Mohamed Kone: Conceptualization, Methodology, Software, Writing - Original Draft. Shulin Wang: Supervision, Writing - Review & Editing. Gaoussou Haidara: Data Curation, Validation.
 
 ### Acknowledgments
 
-[Acknowledgments to be added.]
+Not applicable.
 
 ## References
 
@@ -344,7 +344,7 @@ The authors declare no competing interests. [Revise if needed.]
 9. Peng Y, Yan S, Lu Z. Transfer learning in biomedical natural language processing: an evaluation of BERT and ELMo on ten benchmarking datasets. Proceedings of the 18th BioNLP Workshop and Shared Task. 2019.
 10. Gu Y, Tinn R, Cheng H, Lucas M, Usuyama N, Liu X, et al. Domain-specific language model pretraining for biomedical natural language processing. ACM Transactions on Computing for Healthcare. 2021;3:1-23.
 11. Luo R, Sun L, Xia Y, Qin T, Zhang S, Poon H, et al. BioGPT: generative pre-trained transformer for biomedical text generation and mining. Briefings in Bioinformatics. 2022;23:bbac409.
-12. Singhal K, Azizi S, Tu T, Mahdavi SS, Wei J, Chung HW, et al. Large language models encode clinical knowledge. Nature. 2023;620:172-180.
-13. Jin Q, Yang Y, Chen Q, Lu Z. GeneGPT: augmenting large language models with domain tools for improved access to biomedical information. Bioinformatics. 2024;40:btae075.
-14. Hou W, Ji Z. Assessing GPT-4 for cell type annotation in single-cell RNA-seq analysis. Nature Methods. 2024.
-15. Lu MY, Chen B, Williamson DFK, Chen RJ, Zhao M, Chow AK, et al. A multimodal generative AI copilot for human pathology. Nature. 2024.
+12. Singhal K, Azizi S, Tu T, Mahdavi SS, Wei J, Chung HW, et al. Large language models encode clinical knowledge. Nature. 2023;620:172-180. doi:10.1038/s41586-023-06291-2.
+13. Jin Q, Yang Y, Chen Q, Lu Z. GeneGPT: augmenting large language models with domain tools for improved access to biomedical information. Bioinformatics. 2024;40(2):btae075. doi:10.1093/bioinformatics/btae075.
+14. Hou W, Ji Z. Assessing GPT-4 for cell type annotation in single-cell RNA-seq analysis. Nature Methods. 2024;21:1462-1465. doi:10.1038/s41592-024-02235-4.
+15. Lu MY, Chen B, Williamson DFK, Chen RJ, Zhao M, Chow AK, et al. A multimodal generative AI copilot for human pathology. Nature. 2024;634:466-473. doi:10.1038/s41586-024-07618-3.
