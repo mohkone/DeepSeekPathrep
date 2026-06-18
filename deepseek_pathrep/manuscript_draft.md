@@ -277,7 +277,9 @@ The results support a hybrid architecture. DeepSeek should be used where flexibl
 
 ## Limitations
 
-This study has several limitations. First, it is retrospective and based on a single public TCGA-derived pathology report benchmark. No external pathology-report corpus was available for validation in this study. Performance may differ for contemporary institutional reports, scanned reports, synoptic templates, or reports with different cancer-type distributions.
+The main limitations are the use of a single public dataset, the simplified prognosis endpoint, the absence of an external validation cohort, and the subset-based evaluation of DeepSeek prognosis prompting.
+
+First, this study is retrospective and based on a single public TCGA-derived pathology report benchmark. No external pathology-report corpus was available for validation in this study. Performance may differ for contemporary institutional reports, scanned reports, synoptic templates, or reports with different cancer-type distributions.
 
 Second, the prognosis label is a simplified binary endpoint derived from cancer-type mean disease-specific survival. This does not replace formal survival modeling and does not account for censoring in the way a Cox model, random survival forest, or other time-to-event method would.
 
