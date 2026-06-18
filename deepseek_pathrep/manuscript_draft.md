@@ -305,7 +305,7 @@ Together, the results support a practical hybrid approach: use DeepSeek for extr
 
 ### Ethics Approval and Consent to Participate
 
-This study used public, de-identified TCGA-derived pathology report benchmark data. No new human participant data were collected for this study. Ethics approval and consent requirements should be confirmed according to the submitting institution's policies before submission.
+This study used publicly available, de-identified data derived from TCGA and the PathRep-Bench benchmark. No identifiable human participant data were collected. According to institutional policies, ethical approval and informed consent were not required for this secondary analysis of public de-identified data.
 
 ### Consent for Publication
 
@@ -325,7 +325,7 @@ The authors received no specific funding for this work.
 
 ### Authors' Contributions
 
-Mohamed Kone: Conceptualization, Methodology, Software, Writing - Original Draft. Shulin Wang: Supervision, Writing - Review & Editing. Gaoussou Haidara: Data Curation, Validation.
+Mohamed Kone: Conceptualization, Methodology, Software Development, Formal Analysis, Investigation, Data Curation, Visualization, Writing - Original Draft. Shulin Wang: Supervision, Methodology, Writing - Review & Editing. Gaoussou Haidara: Data Curation, Validation, Writing - Review & Editing.
 
 ### Acknowledgments
 
@@ -333,13 +333,13 @@ Not applicable.
 
 ## References
 
-1. Saluja R, et al. Cancer type, stage and prognosis assessment from pathology reports using large language models. Scientific Reports. 2025. doi:10.1038/s41598-025-10709-4.
-2. PathRep-Bench project repository. https://github.com/rachitsaluja/PathRep-Bench. Accessed 18 Jun 2026.
-3. Rosenthal laboratory TCGA pathology notes dataset. https://huggingface.co/datasets/rosenthal/tcga-path-notes. Accessed 18 Jun 2026.
+1. Saluja R, Rosenthal J, Windon A, et al. Cancer type, stage and prognosis assessment from pathology reports using LLMs. Scientific Reports. 2025;15:27300. doi:10.1038/s41598-025-10709-4.
+2. PathRep-Bench project repository. https://github.com/rachitsaluja/PathRep-Bench. Accessed 19 Jun 2026.
+3. Rosenthal laboratory TCGA pathology notes dataset. https://huggingface.co/datasets/rosenthal/tcga-path-notes. Accessed 19 Jun 2026.
 4. Liu J, Lichtenberg T, Hoadley KA, et al. An integrated TCGA pan-cancer clinical data resource to drive high-quality survival outcome analytics. Cell. 2018;173:400-416.e11.
 5. The Cancer Genome Atlas Research Network, Weinstein JN, Collisson EA, Mills GB, Shaw KRM, Ozenberger BA, et al. The Cancer Genome Atlas Pan-Cancer analysis project. Nature Genetics. 2013;45:1113-1120.
-6. DeepSeek API documentation. https://api-docs.deepseek.com/. Accessed 18 Jun 2026.
-7. DeepSeek API pricing documentation. https://api-docs.deepseek.com/quick_start/pricing. Accessed 18 Jun 2026.
+6. DeepSeek API documentation. https://api-docs.deepseek.com/. Accessed 19 Jun 2026.
+7. DeepSeek API pricing documentation. https://api-docs.deepseek.com/quick_start/pricing. Accessed 19 Jun 2026.
 8. Pedregosa F, Varoquaux G, Gramfort A, Michel V, Thirion B, Grisel O, et al. Scikit-learn: machine learning in Python. Journal of Machine Learning Research. 2011;12:2825-2830.
 9. Peng Y, Yan S, Lu Z. Transfer learning in biomedical natural language processing: an evaluation of BERT and ELMo on ten benchmarking datasets. Proceedings of the 18th BioNLP Workshop and Shared Task. 2019.
 10. Gu Y, Tinn R, Cheng H, Lucas M, Usuyama N, Liu X, et al. Domain-specific language model pretraining for biomedical natural language processing. ACM Transactions on Computing for Healthcare. 2021;3:1-23.
