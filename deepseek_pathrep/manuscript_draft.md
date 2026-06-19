@@ -129,13 +129,57 @@ The extracted variables were then converted into sparse dictionary features and 
 
 We estimated inference cost using recorded token usage from each run and the DeepSeek pricing table used by the analysis scripts. When cache-hit and cache-miss counts were unavailable, prompt tokens were conservatively priced as cache misses. We report estimated cost per report, cost per 1,000 reports, and cost per correct prediction.
 
+Let \(T_m\), \(T_h\), and \(T_o\) denote prompt cache-miss, prompt cache-hit, and output token counts, and let \(p_m\), \(p_h\), and \(p_o\) denote the corresponding prices per one million tokens. Total inference cost was computed as:
+
+$$
+C = \frac{p_m T_m + p_h T_h + p_o T_o}{10^6}.
+$$
+
+Cost per report and cost per correct prediction were then computed as \(C/n\) and \(C/r\), respectively, where \(n\) is the number of processed reports and \(r\) is the number of correct predictions.
+
 ### Evaluation Metrics
 
 We report accuracy and macro F1. Macro F1 was emphasized because the prognosis labels were imbalanced and because staging performance can vary across classes. For DeepSeek prompting, unparseable outputs and empty model outputs were counted as model errors. For labeled tasks, model errors were included as incorrect predictions in the primary metrics.
 
+For \(K\) evaluated labels, let \(n_{ij}\) be the number of reports with gold label \(i\) and predicted label \(j\), and let \(N=\sum_i\sum_j n_{ij}\). Accuracy was defined as:
+
+$$
+\mathrm{Accuracy} = \frac{1}{N}\sum_{i=1}^{K} n_{ii}.
+$$
+
+For each class \(k\), precision, recall, and F1 were computed as:
+
+$$
+P_k = \frac{TP_k}{TP_k + FP_k}, \quad
+R_k = \frac{TP_k}{TP_k + FN_k}, \quad
+F1_k = \frac{2P_kR_k}{P_k + R_k}.
+$$
+
+Macro F1 was the unweighted mean across labels:
+
+$$
+\mathrm{Macro\ F1} = \frac{1}{K}\sum_{k=1}^{K} F1_k.
+$$
+
+In the implementation, \(K\) was defined over the union of observed gold and predicted labels, so invalid or unparseable model outputs penalized both accuracy and macro F1.
+
 ### Statistical Analysis
 
 We estimated 95% confidence intervals using nonparametric bootstrap resampling over reports with 2,000 bootstrap iterations and a fixed random seed. Accuracy and macro F1 confidence intervals were computed by resampling the evaluated reports with replacement and recalculating the metric for each bootstrap sample. For paired model comparisons on the same reports, predictions were aligned by original row index. We used exact McNemar tests for paired accuracy comparisons and paired bootstrap differences for macro F1. Bootstrap comparison p values were computed as two-sided sign-crossing probabilities over the paired bootstrap distribution.
+
+For a metric \(M\), each bootstrap replicate sampled \(N\) report-level tuples with replacement and recomputed \(M^{(b)}\). The 95% confidence interval was defined by the empirical 2.5th and 97.5th percentiles of \(\{M^{(b)}\}_{b=1}^{2000}\). For paired macro F1 comparisons, the bootstrap distribution was:
+
+$$
+\Delta^{(b)} = M_A^{(b)} - M_B^{(b)}.
+$$
+
+The reported confidence interval used the 2.5th and 97.5th percentiles of \(\Delta^{(b)}\), and the two-sided bootstrap p value was:
+
+$$
+p_{\mathrm{boot}} = 2 \min\{\Pr(\Delta^{(b)} \leq 0), \Pr(\Delta^{(b)} \geq 0)\}.
+$$
+
+For McNemar testing, let \(b\) be the number of reports correctly classified by model A and incorrectly classified by model B, and \(c\) the number incorrectly classified by A and correctly classified by B. Under the null hypothesis of equal paired accuracy, discordant outcomes follow a binomial distribution with probability 0.5; the exact two-sided p value was computed from the smaller discordant count among \(b+c\) discordant pairs.
 
 ## Results
 
