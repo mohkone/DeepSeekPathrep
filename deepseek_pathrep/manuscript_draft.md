@@ -317,7 +317,7 @@ Not applicable.
 
 ### Availability of Data and Materials
 
-The public benchmark data were obtained from the PathRep-Bench project and TCGA-derived pathology report resources. Source code and reproducible analysis scripts are available at the project GitHub repository: https://github.com/mohkone/DeepSeekPathrep. An archived version corresponding to this manuscript is available through Zenodo: https://doi.org/10.5281/zenodo.20753000.
+The public benchmark data were obtained from the PathRep-Bench project and TCGA-derived pathology report resources. Source code and reproducible analysis scripts are available at the project GitHub repository: https://github.com/mohkone/DeepSeekPathrep. An archived version corresponding to this manuscript is available through Zenodo: https://doi.org/10.5281/zenodo.20754374.
 
 ### Competing Interests
 

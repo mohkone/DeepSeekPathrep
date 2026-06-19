@@ -28,7 +28,7 @@ https://github.com/mohkone/DeepSeekPathrep
 Zenodo archive:
 
 ```text
-https://doi.org/10.5281/zenodo.20753000
+https://doi.org/10.5281/zenodo.20754374
 ```
 
 Raw benchmark CSV files and raw model-output JSONL files are intentionally not tracked. The data can be prepared from the public PathRep-Bench repository:
