@@ -19,7 +19,7 @@ DeepSeek V4 Flash achieves the highest cancer type identification accuracy among
 | Model | n | Accuracy | Macro F1 | Errors |
 |-------|---|----------|----------|--------|
 | **DeepSeek V4 Flash** (original test) | 594 | **0.8165** | **0.7841** | 0 |
-| GPT-4o-mini (interim 449/594) | 449 | 0.6080 | 0.5980 | 0 |
+| GPT-4o-mini (final, 594 reports) | 594 | 0.5993 | 0.5904 | 0 |
 | DeepSeek V4 Pro (original test) | 594 | 0.8098 | 0.6288 | 14 |
 | PathRep-Bench GPT-4o (reported) | 594 | ~0.76 | — | — |
 
