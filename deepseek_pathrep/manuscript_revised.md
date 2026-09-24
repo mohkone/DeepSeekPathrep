@@ -18,15 +18,15 @@ Pathology report benchmarks derived from The Cancer Genome Atlas (TCGA) are incr
 
 ### Methods
 
-We audited the PathRep-Bench train, validation, and test splits for patient-level overlap using TCGA barcodes and SHA-256 report text hashes. DeepSeek V4 Flash and GPT-4o-mini predictions were analyzed for cancer type identification and AJCC stage prediction; historical DeepSeek V4 Pro aggregate results were retained for context. DeepSeek V4 Flash prognosis prompting was evaluated on 952 reports. A barcode-disjoint test subset was formed by excluding test reports whose patient barcodes appeared in training. Supervised sensitivity analyses used the 887 test cases with usable disease-specific survival (DSS) time and event status, of which 174 were barcode-disjoint. Cox proportional hazards models used DSS time and TCGA Clinical Data Resource event status. Five hundred report-level bootstrap resamples were used for Cox C-index confidence intervals.
+We audited the PathRep-Bench splits using patient barcodes and normalized report-text hashes. Saved DeepSeek V4 Flash and GPT-4o-mini predictions were scored over fixed task label sets, retaining invalid responses as errors. Patient-paired comparisons used exact McNemar tests and 5,000 bootstrap resamples. Cox models used benchmark disease-specific survival (DSS) time and TCGA Clinical Data Resource event status. After detecting 703 repeated patient rows and 12 additional same-text rows in the eligible train-plus-validation set, we refitted three Cox feature sets on 7,247 unique patients and texts, fitting preprocessing on these records alone. The primary survival sensitivity assessment used 173 test patients with neither barcode nor normalized text overlapping the original training or validation splits.
 
 ### Results
 
-The audit found that 770 of 952 test reports (80.9%) shared barcodes with training and that all 770 had byte-identical text. One additional test report had a matching normalized-text hash under a different barcode. In the DSS-observed subset, TF-IDF logistic regression cancer type accuracy was 0.9910 on 887 cases and 0.9713 on the nested 174-case barcode-disjoint subset; prognosis accuracy was 0.8647 and 0.7644, respectively. DeepSeek V4 Flash cancer type accuracy was 0.9800 on the original 952-case test and 0.9835 on the 182-case barcode-disjoint subset. Its original-test cancer type and AJCC accuracy point estimates exceeded GPT-4o-mini's (0.9800 vs. 0.9727 and 0.8165 vs. 0.5993, respectively); the original DeepSeek row-level predictions were unavailable for paired tests. Full-test DeepSeek prognosis prompting achieved 0.4716 accuracy with 31 empty outputs. The clinical-plus-text Cox model achieved a C-index of 0.7875 (95% bootstrap interval, 0.7567–0.8193) on 887 cases and 0.6818 on the nested 174-case barcode-disjoint subset.
+Of 952 test reports, 770 (80.9%) shared a training barcode and identical text; one further report had the same normalized text under a different barcode. Original-run Flash versus GPT-4o-mini cancer-type accuracy was 0.9800 versus 0.9727 (paired McNemar p = 0.0923), while stage accuracy was 0.8165 versus 0.5993 (p = 6.795 × 10⁻²²). On the 181 patient-and-text-disjoint classification cases, new Flash and restricted GPT cancer-type accuracy both equaled 0.9890; for 115 stage-labeled cases, they were 0.8174 and 0.5913. Full-test Flash prognosis prompting achieved accuracy 0.4716 and fixed-two-label macro-F1 0.4792, with 31 invalid outputs. The refitted, deduplicated Cox clinical-plus-text model scored C-index **0.6940** (patient-bootstrap 95% interval 0.6271–0.7629) on 173 disjoint cases; clinical-only scored 0.6551 (0.5822–0.7282). The paired C-index difference interval (−0.0041 to 0.0833) spans zero.
 
 ### Conclusions
 
-The released splits contain substantial cross-split report duplication, making supervised and fine-tuned model evaluations vulnerable to train-test contamination. The nested barcode-disjoint sensitivity results differ from full-test results, but their smaller size and different case mix prevent attributing the whole difference to duplication. Zero-shot evaluations do not train on these splits, although their subset metrics can still vary with case mix. This single TCGA-derived cohort does not provide external validation; independent data and patient-level splitting remain necessary.
+The released splits contain substantial duplication and may contaminate supervised evaluation. Deduplicated Cox fitting addresses repeated training records, but the small nested disjoint test subset and unmatched case mix do not identify a causal leakage effect. The stage comparison supports a Flash advantage under the saved prompting configurations; the cancer-type comparison does not establish one. This single TCGA-derived cohort does **not** constitute external validation.
 
 **Keywords:** pathology reports, data leakage, benchmark evaluation, large language models, DeepSeek, GPT-4o-mini, cancer staging, survival analysis, Cox proportional hazards, TCGA
 
@@ -42,7 +42,7 @@ A fundamental assumption of any benchmark is that the training, validation, and 
 
 A second concern is the choice of prognosis endpoint. PathRep-Bench uses a binary label derived from cancer-type mean disease-specific survival (DSS) time: patients surviving beyond the mean are labeled "good" and those below are labeled "poor." This thresholding discards time-to-event and censoring information, creates ambiguity for cases near the threshold, and does not correspond to a clinically validated prognostic category. Proper survival analysis methods, such as Cox proportional hazards modeling, can use the actual survival time and censoring status to provide a more clinically meaningful evaluation.
 
-This study makes three contributions. First, we audit the released splits for cross-split duplication and perform a nested barcode-disjoint sensitivity analysis. Second, we report DeepSeek and GPT-4o-mini classification point estimates and extend DeepSeek prognosis prompting to the full test set; comparisons with earlier DeepSeek Flash and Pro runs are descriptive because their row-level files were not available for this revision. Third, we evaluate Cox proportional hazards models using TCGA-CDR censoring information instead of relying exclusively on thresholded DSS labels. These analyses examine internal robustness, not generalization to an external cohort.
+This study makes three contributions. First, we audit released split identities and report text, identifying a nested patient-and-text-disjoint sensitivity subset. Second, we correct task-label macro-F1 scoring and compare saved Flash and GPT-4o-mini predictions with paired tests, while extending prognosis prompting to all 952 test reports. Third, we repeat DSS time-to-event Cox fitting after patient and report deduplication and train-only preprocessing. These analyses examine internal robustness, not generalization to an external cohort.
 
 ## 2 Methods
 
@@ -64,7 +64,7 @@ For overlapping barcodes between train and test, we also checked exact text equa
 
 ### 2.3 Deduplicated test set
 
-We excluded test reports whose patient barcodes appeared in training, leaving a 182-report **barcode-disjoint sensitivity subset** of the original 952-case test. This is a nested subset, not a new patient-level train/test resplit and not an external validation cohort. One of its reports still has a normalized-text match to a different-barcode training report. Among test cases eligible for DSS modeling, 174 of 887 were barcode-disjoint. AJCC staging had 116 labeled reports in the 182-case subset.
+We excluded test reports whose patient barcodes appeared in training, leaving a 182-report barcode-disjoint sensitivity subset. Removing the one remaining cross-barcode normalized-text match left 181 patient-and-text-disjoint reports, 115 with AJCC stage labels. The corresponding DSS-eligible subsets included 174 barcode-disjoint and 173 barcode-and-text-disjoint cases. Selection depended on identifiers and text, not outcomes or prediction correctness; these are nested internal subsets, not an independently sampled cohort. The val–test split had no matching IDs or report hashes in the audit.
 
 ### 2.4 Models
 
@@ -79,7 +79,7 @@ We evaluated the following models:
 
 The prompts required JSON-only answers. The cancer type prompt supplied the 32 allowed labels, and the stage prompt supplied Stage I–IV; prognosis prompting supplied the cancer-type mean DSS threshold. DeepSeek cancer type calls used non-reasoning mode, while DeepSeek stage and prognosis calls used reasoning mode. GPT-4o-mini used the shared task prompts through a separate API without an equivalent DeepSeek reasoning-mode setting. Therefore, the cross-model contrast compares the tested configurations, not isolated model architectures. The original 100-report few-shot prognosis run supplied eight training examples; the new 952-report run was zero-shot.
 
-Model output failures, including empty final responses, were counted as incorrect. The existing runner computes macro F1 over the union of observed gold labels and normalized prediction values, treating an empty prediction as an additional zero-F1 label. This nonstandard failure-label convention makes the reported macro F1 sensitive to output failures; we retain it to match the saved metrics.
+Model output failures, empty responses, and out-of-vocabulary values were counted as incorrect. For the present analyses, macro-F1 averages over the prespecified 32 cancer types, four stages, or two prognosis labels (`fixed_task_labels_v1`): invalid outputs contribute false negatives rather than an extra class, and labels absent in a subset have zero F1. This corrects earlier runner-generated union-of-observed-and-predicted-label F1 values without changing accuracy or normalization. The two `unknown` GPT cancer predictions are invalid even though the API error field is zero; 29-present-class subset F1, when shown, is explicitly secondary.
 
 ### 2.6 Cox proportional hazards survival modeling
 
@@ -91,11 +91,11 @@ We fitted Cox proportional hazards models using the following feature sets:
 2. **Clinical + TF-IDF**: Clinical features plus 100 SVD-reduced TF-IDF components from pathology report text.
 3. **TF-IDF only**: 100 SVD-reduced TF-IDF components only.
 
-Models were trained on the combined training and validation splits (7,962 records with usable survival data) with Cox penalizer 0.1 and evaluated on 887 test records. A held-out C-index is the primary metric; 95% percentile intervals were computed using 500 report-level resamples of the original test set. Saved per-record partial-hazard scores reproduce the full-set C-indices and permit recalculation on the nested 174-case barcode-disjoint subset. The attempted paired bootstrap comparison failed, so no paired Cox difference interval or p value is reported.
+For historical comparison, the archived Cox models fitted 7,962 eligible train-plus-validation rows: 7,079 training and 883 validation, but only 7,259 distinct patient IDs. In the new fit we retain the first eligible row per patient (training precedes validation), then the first row per lowercased, whitespace-collapsed SHA-256 report hash. This removes 703 repeated patient rows and 12 further same-text rows under different barcodes, leaving 7,247 distinct fitted patients and texts. Age median imputation, cancer-type categories, TF-IDF vocabulary, 100-component truncated SVD, and scaling were fitted only on those retained records. Cox penalizer was fixed at 0.1; no validation-set tuning was performed after combining the splits. Models produced partial-hazard risk scores on all 887 test records, but the **primary sensitivity endpoint** is the 173-case patient-and-text-disjoint subset, chosen against the original eligible train-plus-validation inputs. Concordance uses negative risk; 2,000 patient-paired percentile bootstrap resamples (seed 20260924) quantify conditional test-sample uncertainty and the clinical-plus-text minus clinical-only difference. The original 887-case scores remain descriptive because 713 patients overlap training. No integrated Brier score or successful leave-one-cancer-type-out fit is claimed.
 
 ### 2.7 Statistical analysis
 
-We report accuracy and runner-defined macro F1 for classification tasks, counting empty outputs in the denominator and as an additional prediction value for macro F1. Confidence intervals for original DeepSeek cancer type and stage results are carried over from the earlier manuscript. No confidence interval was saved for the new GPT-4o-mini results or the 952-case DeepSeek prognosis run. Original DeepSeek Flash/Pro row-level predictions were not available in this workspace, so no paired DeepSeek-versus-GPT-4o-mini accuracy or F1 test was possible. Cox intervals used 500 test-report bootstrap resamples; the saved paired Cox bootstrap and leave-one-cancer-type-out runs failed and are not used as evidence.
+We report fixed-label macro-F1 and accuracy for classification, with invalid predictions in the denominator. The supplied verification report documents patient-ID and gold-label checks against historical original Flash prediction files held locally by the verifier, enabling four exploratory Flash–GPT comparisons. Exact two-sided McNemar tests assess paired correctness; 5,000 patient-paired percentile bootstrap resamples (seed 20260924) give unadjusted macro-F1 difference intervals. Holm-adjusted p values cover the four McNemar tests. These comparisons are conditional on saved runs and do not estimate API-run variability. The historical original Flash row files and verifier's machine-readable paired results are **not** in this distribution, so those particular tests cannot be independently reproduced from this package; we distinguish them from comparisons reconstructible using its five new JSONLs. The prior archived paired Cox bootstrap and all 20 leave-one-cancer-type-out fits failed; only the separately run deduplicated Cox bootstrap is reported as successful.
 
 ## 3 Results
 
@@ -116,11 +116,11 @@ All 770 test reports sharing training barcodes had byte-identical report text. T
 
 ### 3.2 Barcode-disjoint sensitivity analysis
 
-For the TF-IDF sensitivity runs trained on the 7,962 DSS-observed train-plus-validation records, cancer type accuracy was 0.9910 on 887 test cases and 0.9713 on the nested 174-case barcode-disjoint subset. Prognosis accuracy was 0.8647 and 0.7644, respectively (Table 2). These runs must not be conflated with the original manuscript's 952-case TF-IDF prognosis result (0.8571 accuracy). The barcode-disjoint subset is much smaller and has a different case mix; differences between its score and the full-set score are descriptive, not an identified causal effect of duplication.
+The historical TF-IDF sensitivity runs trained on 7,962 DSS-observed train-plus-validation rows (before the Cox-specific deduplication) scored 0.9910 and 0.9713 cancer-type accuracy on all 887 and the nested 174 barcode-disjoint cases, respectively; prognosis accuracy was 0.8647 and 0.7644. These are retained as historical descriptive results, **not** outcomes of the newly deduplicated Cox fit. They differ from the original manuscript's separate 952-case supervised prognosis baseline.
 
-DeepSeek V4 Flash cancer type accuracy was 0.9800 on the original 952-case test and 0.9835 on the 182-case barcode-disjoint subset. Its stage accuracy was 0.8165 on 594 labeled original-test cases and 0.8103 on 116 labeled barcode-disjoint cases; seven of the latter produced empty responses. These zero-shot results do not establish equivalent performance across populations. Original-run DeepSeek metrics in this table come from the earlier manuscript's aggregate results, whose row-level records were not in the verification bundle.
+Flash cancer type accuracy was 0.9800 in the original 952-case test and 0.9835 in the separately prompted 182-case barcode-disjoint run. Corresponding stage accuracies were 0.8165/594 and 0.8103/116; seven of the new stage outputs were invalid. The new subset run is **not** a restriction of the original run: repeated prompts may change responses. Table 2 marks run identity and the 173-case text-disjoint survival endpoint.
 
-**Table 2.** Original test versus nested barcode-disjoint sensitivity subset. The Cox scores are from the same fitted model; the supervised logistic regression runs in the first two rows were separately fitted on the DSS-observed subset. A one-report cross-barcode text match remains in the subset.
+**Table 2.** Original test versus nested internal sensitivity subsets. Cox numbers here are from the new deduplicated fit, not the original Cox fit; the older TF-IDF logistic regression and original/new Flash prediction runs are separate experiments. The original cohort overlaps training.
 
 | Task and method | Original test, n; score | Barcode-disjoint subset, n; score | Metric |
 |-----------------|------------------------:|----------------------------------:|--------|
@@ -129,54 +129,62 @@ DeepSeek V4 Flash cancer type accuracy was 0.9800 on the original 952-case test 
 | Prognosis, same classifier | 887; 0.8617 | 174; 0.7586 | Macro F1 |
 | Cancer type, DeepSeek Flash zero-shot | 952; 0.9800 | 182; 0.9835 | Accuracy |
 | AJCC stage, DeepSeek Flash zero-shot | 594; 0.8165 | 116; 0.8103 | Accuracy |
-| Cox clinical plus text | 887; 0.7875 | 174; **0.6818** | C-index |
+| Cox clinical plus text, **new deduplicated fit** | 887; 0.7926 | 174; 0.6899 (173 ID/text-disjoint; **0.6940**) | C-index |
 
 ### 3.3 Cross-model comparison
 
-DeepSeek V4 Flash had higher reported point estimates than GPT-4o-mini on both cancer type identification and AJCC stage prediction (Table 3). For cancer type, Flash's historical aggregate result was 0.9800 accuracy and 0.9778 macro F1, compared with 0.9727 and 0.9394 for the archived GPT-4o-mini run. For AJCC stage, the corresponding values were 0.8165 and 0.7841 versus 0.5993 and 0.5904. GPT-4o-mini predicted Stage II for 63 Stage I reports and Stage IV for 32 Stage III reports. No paired significance test was possible without the original DeepSeek row-level predictions, and the tested DeepSeek reasoning-mode configuration was not matched by an equivalent GPT-4o-mini configuration.
+On the original test, Flash cancer type accuracy/macro-F1 were 0.9800/0.9778 versus 0.9727/**0.9687** for GPT-4o-mini. The paired cancer accuracy difference was +0.00735, exact McNemar p = 0.0923 (Holm-adjusted 0.1846); the paired F1 difference was +0.00912 (95% percentile interval −0.00066 to 0.02224). AJCC accuracy/macro-F1 were 0.8165/0.7841 versus 0.5993/0.5904; paired accuracy difference was +0.21717, p = 6.795 × 10⁻²² (Holm-adjusted 2.718 × 10⁻²¹), and F1 difference was +0.19371 (0.14844 to 0.23900). These results support an AJCC advantage, not statistically demonstrated cancer-type superiority. The two APIs used different prompting/reasoning configurations, so they do not isolate architecture.
 
-**Table 3.** Descriptive model-configuration comparison on the original test set. DeepSeek Flash/Pro values and their confidence intervals are historical aggregate results from the earlier manuscript, not recalculated from row-level files in the verification bundle; the GPT-4o-mini results are backed by archived prediction JSONLs. No paired cross-model test is reported.
+**Table 3.** Fixed-task-label scoring of saved original runs. Flash original rows and the paired verifier's machine-readable output remain outside the distributed bundle; its seven row-level checks and paired estimates are documented in the attached verification report. GPT rows are archived here. “Invalid” is distinct from model/API errors. Historical DeepSeek Pro results are omitted because fixed-label rescoring from row-level records is unavailable.
 
-| Task | Model | n | Accuracy (95% CI) | Macro F1 | Errors |
-|------|-------|---|------------------|----------|--------|
-| Cancer type | DeepSeek V4 Flash | 952 | 0.9800 (0.9695–0.9884) | 0.9778 | 0 |
-| Cancer type | GPT-4o-mini | 952 | 0.9727 | 0.9394 | 0 |
-| Cancer type | DeepSeek V4 Pro | 952 | 0.9769 (0.9664–0.9863) | 0.9685 | 0 |
-| AJCC stage | DeepSeek V4 Flash | 594 | 0.8165 (0.7845–0.8468) | 0.7841 | 0 |
-| AJCC stage | GPT-4o-mini | 594 | 0.5993 | 0.5904 | 0 |
-| AJCC stage | DeepSeek V4 Pro | 594 | 0.8098 (0.7761–0.8401) | 0.6288 | 14 |
+| Task | Model | n | Accuracy | Fixed-label macro-F1 | Invalid predictions |
+|------|-------|---:|---------:|---------------------:|--------------------:|
+| Cancer type | DeepSeek V4 Flash, original | 952 | 0.980042 | 0.977832 | 0 |
+| Cancer type | GPT-4o-mini, original | 952 | 0.972689 | 0.968712 | 2 |
+| AJCC stage | DeepSeek V4 Flash, original | 594 | 0.816498 | 0.784110 | 0 |
+| AJCC stage | GPT-4o-mini, original | 594 | 0.599327 | 0.590398 | 0 |
 
-Earlier aggregate analyses reported 14 empty DeepSeek V4 Pro stage outputs with a 4,096-token completion budget. The original token-level cost logs and row-level Flash/Pro predictions were unavailable in this verification bundle, so revised cost and paired-comparison claims are deferred pending recovery of those records.
+Table 3's Flash original values and original paired tests are attributed to the user-supplied verification report, whose local source files are not included in the package. No revised cost claim or Pro-versus-GPT inference is made.
+
+**Table 3a.** Matched ID/text-disjoint subset. New Flash predictions were generated separately for the barcode-disjoint subset, then restricted to text-disjoint records; GPT predictions are restrictions of its original full-test run. The 32-class cancer F1 includes three absent categories as zeros; on 29 present classes, Flash/GPT F1 is 0.994158/0.983431.
+
+| Task | Flash new run, n; accuracy; fixed-label F1 | GPT original restricted, n; accuracy; fixed-label F1 | Paired McNemar p (Holm p) | Paired F1 difference, 95% CI |
+|------|-------------------------------------------|-----------------------------------------------------|----------------------------|------------------------------|
+| Cancer type | 181; 0.988950; 0.900956 | 181; 0.988950; 0.891234 | 1.000000 (1.000000) | +0.009722 (−0.001838, 0.016667) |
+| AJCC stage | 115; 0.817391; 0.830834 | 115; 0.591304; 0.597037 | 2.434 × 10⁻⁵ (7.303 × 10⁻⁵) | +0.233797 (0.144359, 0.331858) |
+
+Restricted original Flash AJCC predictions, a *different* run from new Flash, scored 0.843478 accuracy and 0.835582 F1 on these same 115 cases. No change across runs is ascribed to leakage alone.
 
 ### 3.4 Full-test DeepSeek prognosis prompting
 
-DeepSeek V4 Flash prognosis prompting was evaluated on all 952 test reports (Table 4), extending the original 100-report subset. It returned 449 correct classifications, 31 empty outputs, 0.4716 accuracy, and 0.3195 runner-defined macro F1. The latter averages over the two gold classes and an additional empty-output prediction label. Among 921 valid outputs, accuracy was 449/921 (0.4875) and the two-class macro F1 was approximately 0.4872; these are secondary valid-output-only values. The original 100-report subset scores are historical aggregate results, not rerun in the verification archive. No new full-test confidence interval was calculated.
+DeepSeek V4 Flash prognosis prompting on all 952 reports returned 449 correct and 31 invalid outputs: accuracy 0.471639 and **fixed-two-label macro-F1 0.479198**. The previously quoted runner F1 of 0.319466 incorrectly averaged an empty-output value as a third class. On the 181 ID/text-disjoint reports (restriction of the original run), accuracy/F1 were 0.513812/0.517397, with three invalid outputs. The original 100-case zero-/eight-shot results remain historical and were not rerun here.
 
-**Table 4.** DeepSeek prognosis prompting. The full-test results have saved per-row predictions. The 100-case zero- and eight-shot values, and the 952-case TF-IDF baseline, are earlier manuscript aggregates and are not reproduced by the new prediction archive.
+**Table 4.** DeepSeek prognosis prompting. Fixed-label F1 is used for the two verified 952/181-case rows. The older 100-case values and the 952-case supervised baseline are historical aggregates with different cohorts/scoring provenance; they are not used for quantitative model comparison.
 
 | Condition | n | Accuracy | Macro F1 | Errors |
 |-----------|---|----------|----------|--------|
 | Zero-shot (100-report subset) | 100 | 0.5300 | 0.5083 | 0 |
 | 8-shot (100-report subset) | 100 | 0.5700 | 0.5647 | 0 |
-| Zero-shot (full test) | 952 | 0.4716 | 0.3195 | 31 |
+| Zero-shot (full test) | 952 | 0.4716 | **0.4792** | 31 |
+| Zero-shot (original run restricted to ID/text-disjoint) | 181 | 0.5138 | 0.5174 | 3 |
 | TF-IDF LogReg (original supervised baseline) | 952 | 0.8571 | 0.8543 | — |
 
 ### 3.5 Cox proportional hazards survival model
 
-The Cox clinical-plus-text model had a C-index of 0.7875 (95% bootstrap interval, 0.7567–0.8193) on the original 887-case test set (Table 5). The clinical-only and text-only models scored 0.7648 and 0.7780, respectively. The clinical-plus-text point estimate was 0.0227 above clinical-only on that set, but the paired bootstrap run failed; no paired difference interval or significance conclusion is available.
+Table 5 contrasts the archived duplicate-training fit (7,962 rows) with the newly fitted patient-and-report-deduplicated Cox models (7,247 rows). The newly fitted clinical-plus-text C-index was 0.6940 on the locked 173-case ID/text-disjoint subset versus 0.6551 for clinical-only and 0.7181 for text-only. Its paired difference from clinical-only was +0.0389, bootstrap 95% interval −0.0041 to 0.0833, so a text-feature benefit is not established. The full 887-case test remains overlapping and is not the primary endpoint.
 
-**Table 5.** Cox proportional hazards results. Intervals use 500 test-report bootstrap resamples on the original test set. No interval was calculated for the nested barcode-disjoint subset. All C-indices below were reproduced from the archived per-record risk scores.
+**Table 5.** Cox DSS concordance. The prior and new fits must not be pooled; each cell is evaluated on the stated test subset. The new 173-case intervals use 2,000 patient-paired percentile resamples conditional on fixed fitted models. No external validation or leave-one-cancer-type-out performance is implied.
 
-| Model | C-index | 95% CI | n_train | n_test |
-|-------|---------|--------|---------|--------|
-| Clinical only | 0.7648 | 0.7296–0.7975 | 7,962 | 887 |
-| Clinical + TF-IDF | 0.7875 | 0.7567–0.8193 | 7,962 | 887 |
-| TF-IDF only | 0.7780 | 0.7480–0.8109 | 7,962 | 887 |
-| Clinical only (barcode-disjoint subset) | 0.6551 | Not calculated | 7,962 | 174 |
-| Clinical + TF-IDF (barcode-disjoint subset) | **0.6818** | Not calculated | 7,962 | 174 |
-| TF-IDF only (barcode-disjoint subset) | 0.6933 | Not calculated | 7,962 | 174 |
+| Fit / model | Original 887 (overlap) | ID-disjoint 174 | ID/text-disjoint 173 (95% CI for new fit) |
+|-------------|-----------------------:|----------------:|---------------------------------------------:|
+| Prior fit (7,962 rows), clinical only | 0.764758 | 0.655051 | 0.655925 |
+| Prior fit (7,962 rows), clinical + text | 0.787460 | 0.681818 | 0.688773 |
+| Prior fit (7,962 rows), text only | 0.777967 | 0.693333 | 0.705821 |
+| **Deduplicated fit (7,247 rows), clinical only** | 0.764896 | 0.654040 | 0.655094 (0.582189–0.728202) |
+| **Deduplicated fit (7,247 rows), clinical + text** | 0.792612 | 0.689899 | **0.693971 (0.627109–0.762943)** |
+| **Deduplicated fit (7,247 rows), text only** | 0.787038 | 0.709899 | 0.718087 (0.651700–0.787822) |
 
-The train-plus-validation set contained 1,658 events and 6,304 censored records; the 887-case test contained 183 events and 704 censored records. The nested barcode-disjoint survival subset contained 174 records and 49 events. On that subset, the same fitted clinical-plus-text model scored **0.6818**, not the previously quoted 0.7210. This smaller-subset score is an internal sensitivity result and cannot isolate the causal effect of duplicate training reports from differences in case mix.
+The original eligible training-plus-validation set contained 1,658 events and 6,304 censored records. The 887/174/173 test subsets had 183/49/48 events, respectively. Archived risk scores reproduce the earlier clinical-plus-text C-index **0.6818** for 174 ID-disjoint cases and **0.6888** for 173 ID/text-disjoint cases, not the previously quoted 0.7210. The newly deduplicated fit is a different model, not a correction made by simply changing a test mask.
 
 ### 3.6 Error analysis
 
@@ -188,33 +196,33 @@ GPT-4o-mini showed more diffuse stage confusion, with substantial errors across 
 
 ## 4 Discussion
 
-This audit found substantial cross-split report duplication in the released PathRep-Bench splits: 80.9% of test reports shared a training barcode and exact report text. This creates a risk of contamination for models trained on the released splits, although the different scores on the nested barcode-disjoint subset do not by themselves measure a causal inflation effect. Original-test DeepSeek Flash accuracy point estimates exceeded those of the tested GPT-4o-mini configuration, without a recoverable paired comparison. Full-test DeepSeek prognosis prompting was weak under its tested setup, and the Cox analysis used DSS times and event indicators instead of only thresholded prognosis labels.
+This audit found substantial cross-split duplication in the released PathRep-Bench splits: 80.9% of test reports shared a training barcode and exact text. This creates contamination risk for split-trained models, although nested subset contrasts do not measure a causal leakage effect. Paired saved-run analyses support Flash's advantage over GPT-4o-mini for AJCC under the tested configurations, not for cancer type. The new Cox fit resolves within-training patient/text repetition and uses DSS time and event status instead of the binary surrogate; its small disjoint-cohort scores remain exploratory.
 
 ### 4.1 Implications of data leakage
 
-Supervised models trained on released train-split reports may encounter identical text at evaluation, whereas our zero-shot API runs did not fit on that train split. The DSS-observed TF-IDF prognosis score was 0.8647 on all 887 test cases and 0.7644 on the 174-case barcode-disjoint subset; the same fitted clinical-plus-text Cox model scored 0.7875 and 0.6818 on those respective groups. These contrasts raise concern about apparent supervised performance, but the subset is smaller and may be more difficult for reasons unrelated to duplication. We therefore cannot quantify the fraction of any score difference attributable to memorization or infer that all earlier PathRep-Bench comparisons were biased in one direction.
+Supervised models trained on released reports may encounter identical text at evaluation, whereas these zero-shot API runs did not fit on those splits. The historical DSS-observed TF-IDF prognosis classifier scored 0.8647 on all 887 and 0.7644 on 174 barcode-disjoint cases. After training deduplication, the clinical-plus-text Cox model scored 0.7926 on all 887 overlapping cases and 0.6940 on the 173 ID/text-disjoint cases. The cohorts differ markedly in size and case mix. Neither this contrast nor the prior fit's 0.7875 versus 0.6888 contrast quantifies memorization or causal score inflation.
 
 Other report benchmarks may also require cross-split identity and text checks. We recommend patient-level grouping before splitting, a report-text overlap audit, and a newly constructed held-out split rather than simply deleting overlapping test rows after model development.
 
 ### 4.2 Cross-model comparison
 
-DeepSeek V4 Flash had higher historical accuracy point estimates than the newly run GPT-4o-mini configuration for cancer type (0.9800 vs. 0.9727) and AJCC stage (0.8165 vs. 0.5993). The tested prompting and reasoning configurations differed; the data do not isolate model architecture or reasoning mode as the cause. The missing original DeepSeek row-level predictions preclude paired statistical testing, and historical Flash/Pro cost estimates cannot be rechecked without the corresponding token records.
+DeepSeek V4 Flash had a numerically higher original-run cancer-type accuracy (0.9800 versus 0.9727) but the paired exact test was not significant (p = 0.0923); AJCC staging showed a larger paired difference (0.8165 versus 0.5993, p = 6.795 × 10⁻²²). The 181-case text-disjoint cancer-type comparison had identical accuracy. The tested prompting and reasoning configurations differed, and paired estimates are conditional on saved API responses rather than repeated model draws. The original Flash row files used by the verifier are not in this distributed package, so the full original-run tests are reported from the verifier's checked results rather than independently reproducible here.
 
 ### 4.3 Prognosis: prompting versus survival modeling
 
-Full-test DeepSeek prognosis prompting scored 0.4716 accuracy (449/952), including 31 empty responses under the tested completion budget. Its runner-defined macro F1 of 0.3195 includes an empty-output label; among valid responses, accuracy was 0.4875. These findings indicate weak performance in this particular binary surrogate task and prompting configuration, not a general inability of LLMs to support outcome research.
+Full-test DeepSeek prognosis prompting scored 0.4716 accuracy (449/952) and 0.4792 fixed-label macro-F1, with 31 invalid responses. The old 0.3195 union-label F1 was a scoring artifact, not evidence of a still lower two-class F1. These findings indicate weak performance in this particular binary surrogate task and prompting configuration, not a general inability of LLMs to support outcomes research.
 
-The Cox model uses survival time and event status rather than a dichotomized label. Clinical-plus-text had a higher C-index point estimate than clinical-only (0.7875 vs. 0.7648) on the original test set, but the attempted paired comparison failed. The original set contains train-overlapping reports, and the barcode-disjoint subset has only 49 events; these results are exploratory rather than evidence of a validated clinical survival model.
+The deduplicated Cox models use survival time and event status rather than a dichotomized label. On the 173 ID/text-disjoint cases, the clinical-plus-text versus clinical-only C-index difference was 0.0389, but its paired interval crossed zero. The prior archived paired bootstrap failed; that failure should not be confused with the successful, separately computed bootstrap of the new fit. The 48-event disjoint cohort is too limited to establish a clinical survival tool.
 
 ### 4.4 Limitations
 
-Several limitations should be noted. First, all analyses use the same TCGA-derived cohort. The barcode-disjoint subset contains only 182 reports (174 with usable survival data and 116 with stage labels), has different case mix, and contains one normalized-text match to a training report with a different barcode. It is an internal sensitivity check, not external validation. An independently sourced corpus and a new patient-level, text-audited split remain necessary.
+Several limitations should be noted. First, all analyses use the same TCGA-derived cohort. The 182 barcode-disjoint reports still include one train-matching text under a different barcode; removing it leaves 181 reports, 115 stage-labeled and 173 survival-eligible (48 events). This is an internal sensitivity check, not external validation. An independently sourced corpus and a prospectively specified patient-grouped, text-audited resplit remain necessary.
 
-Second, the Cox model used SVD-reduced TF-IDF features rather than full TF-IDF or transformer-based embeddings. The saved robustness run did not produce paired C-index comparisons or successful leave-one-cancer-type-out results, and integrated Brier scores were not calculated. Richer text representations and broader clinical features could produce different rankings.
+Second, Cox used SVD-reduced TF-IDF features rather than full TF-IDF or transformer embeddings. Although the new fit removes repeated patients and report texts from the training inputs and fits transformations only there, it uses the predefined train-plus-validation combination without a separate model-selection validation fold. The overlapping full test remains contaminated; only its locked 173-case subset is disjoint from original eligible training inputs. All 20 prior leave-one-cancer-type-out fits failed and integrated Brier scores were not calculated. Bootstrap uncertainty is conditional on the fitted model and does not capture training-set or API-run variation.
 
 Third, the full-set DeepSeek prognosis run used zero-shot reasoning-mode prompting and had 31 empty outputs. The eight-shot result applies only to an earlier 100-case subset. Prompt-budget and few-shot sensitivity on the full test remain untested.
 
-Fourth, the original DeepSeek Flash/Pro row-level prediction files and token-level logs were unavailable for this revision. Their historical aggregate results can be described, but paired cross-model tests and revised cost calculations cannot be verified from the bundled artifacts. The GPT-4o-mini API setup did not mirror DeepSeek's reasoning-mode configuration.
+Fourth, the verifier checked historical original Flash row-level predictions against GPT but only supplied the human-readable verification report, not those source files or the machine-readable paired bootstrap output. Therefore, the original-run paired results cannot be independently rerun from the package, whereas the new-run subset and deduplicated Cox records can. Original Flash/Pro token logs remain unavailable for cost recalculation. The GPT-4o-mini request did not activate a corresponding reasoning mode, regardless of a `thinking=enabled` metadata field in its saved records.
 
 Finally, zero-shot LLMs were not trained on these released splits, but differences between full and barcode-disjoint LLM scores remain subject to sample selection and output failures. No independent institutional pathology-report cohort was evaluated.
 
@@ -226,7 +234,7 @@ For deployment, model outputs should include evidence spans, uncertainty estimat
 
 ## 5 Conclusions
 
-The released PathRep-Bench test split has substantial train-test barcode and report-text overlap, creating a contamination risk for split-trained models. Nested barcode-disjoint sensitivity analyses and a Cox survival analysis clarify, but do not causally quantify, how evaluation results may change with the sample. The tested DeepSeek Flash configuration had higher cancer-type and AJCC accuracy point estimates than GPT-4o-mini; full-test DeepSeek prognosis prompting was weak with 31 empty outputs. A patient-level, report-text-audited resplit and an independent external cohort are needed before making broad generalizability or clinical claims.
+The released PathRep-Bench test split has substantial train-test barcode and report-text overlap, creating contamination risk for split-trained models. Fixed-label rescoring corrects three previously misstated F1 estimates; patient-paired tests distinguish supported AJCC from unsupported cancer-type superiority in these saved configurations. Refitting Cox after patient/text deduplication yields 0.6940 clinical-plus-text concordance on a 173-case disjoint subset, without establishing an improvement over clinical-only or external validity. Full-test DeepSeek prognosis prompting remains weak despite corrected F1. A patient-grouped, text-audited new split and independent cohort are needed before broad generalizability or clinical claims.
 
 ## Declarations
 
@@ -237,7 +245,7 @@ This study used publicly available, de-identified data derived from TCGA and the
 Not applicable.
 
 ### Availability of data and materials
-The public benchmark data are available from the PathRep-Bench project repository and TCGA pathology report resources. Source code and reproducible analysis scripts are available at https://github.com/mohkone/DeepSeekPathrep.
+The public benchmark data are available from the PathRep-Bench project repository and TCGA pathology report resources. Source code and a private reproducibility bundle with corrected fixed-label scores, predictions, risk scores, split manifests, and the independent verification report are provided alongside this draft. The original historical Flash paired-source files and associated machine-readable verifier results are not included in that bundle; the corresponding paired estimates require those files for independent reproduction. No patient-external cohort was analyzed. Code is available at https://github.com/mohkone/DeepSeekPathrep.
 
 ### Competing interests
 The authors declare no competing interests.
