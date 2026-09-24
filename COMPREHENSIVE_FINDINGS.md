@@ -1,4 +1,6 @@
-# Comprehensive Findings: DeepSeekPathrep Manuscript Revision
+# Historical Working Findings (Superseded)
+
+**Do not cite the figures or claims below without checking the corrected manuscript.** The clinical-plus-text Cox C-index on the 174-case barcode-disjoint subset is **0.6818**, not 0.7210. The subset has different case mix, one cross-barcode normalized-text match to training, and is not external validation. The saved paired Cox bootstrap and leave-one-cancer-type-out analyses failed. See `deepseek_pathrep/manuscript_revised.md` and the project verification archive for verified values and qualifications.
 
 ## Executive Summary
 

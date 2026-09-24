@@ -1,4 +1,6 @@
-# Final Results: DeepSeekPathrep Manuscript Revision
+# Historical Working Results (Superseded)
+
+**Do not use this file for manuscript tables or submission.** It predates the artifact-level audit. In particular, the clinical-plus-text Cox C-index on the 174-case barcode-disjoint subset is **0.6818**, not 0.7210; the full 952-case DeepSeek prognosis accuracy is **0.4716** with 31 empty outputs, and runner-defined macro F1 is **0.3195**. The 887-to-174 case supervised contrasts are nested-subset sensitivity analyses, not causal estimates of duplication effects or external validation. Original DeepSeek Flash/Pro row-level predictions are unavailable for paired cross-model tests. Use `deepseek_pathrep/manuscript_revised.md` and the project verification archive instead.
 
 ## Complete Cross-Model Comparison Table
 

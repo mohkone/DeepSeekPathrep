@@ -1,4 +1,6 @@
-# DeepSeekPathrep Manuscript Revision Plan
+# Historical Revision Plan (Superseded)
+
+**This is an earlier planning note, not the current evidence record.** Its 0.7210 clean-subset Cox C-index was not reproduced by the final fitted model; the corrected clinical-plus-text value is **0.6818** on 174 barcode-disjoint cases. The sensitivity subset is not external validation, and not all original model prediction files are available for paired analysis. Refer to `deepseek_pathrep/manuscript_revised.md` and the project verification archive before using any numbers below.
 
 ## Situation
 
