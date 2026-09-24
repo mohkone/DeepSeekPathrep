@@ -1,0 +1,8 @@
+# Direct analysis dependencies used for the 2026-09-24 Cox refit and
+# verified-results packager. Tested with Python 3.14.3.
+# The API-only runner's requirements.txt is intentionally separate.
+numpy==2.5.3
+pandas==2.3.3
+scipy==1.18.1
+scikit-learn==1.9.1
+lifelines==0.30.3

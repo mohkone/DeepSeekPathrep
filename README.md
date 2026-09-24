@@ -27,6 +27,8 @@ overlaps training; its scores are descriptive.
   paired-bootstrap safeguards.
 - `deepseek_pathrep/package_verified_results.py`: score saved prediction files
   with fixed task labels and create a checksum-manifest audit archive.
+- `deepseek_pathrep/requirements-analysis.txt`: pinned direct dependencies for
+  the Cox and verification workflows.
 - `deepseek_pathrep/manuscript_draft.md`: earlier manuscript, retained for
   history; do not use its superseded tables as the current results.
 
@@ -37,11 +39,11 @@ not tracked in this repository.
 
 Run from the repository root with Python 3 and the public input data. The
 DeepSeek runner's `deepseek_pathrep/requirements.txt` does **not** include
-dependencies for the Cox analysis. For the environment used to generate the
-revised results, install:
+dependencies for the Cox analysis. Install the pinned direct analysis
+dependencies (tested on Python 3.14.3):
 
 ```bash
-python -m pip install "numpy==2.5.3" "pandas==2.3.3" "scipy==1.18.1" "scikit-learn==1.9.1" "lifelines==0.30.3"
+python -m pip install -r deepseek_pathrep/requirements-analysis.txt
 ```
 
 Prepare the public [PathRep-Bench](https://github.com/rachitsaluja/PathRep-Bench)
