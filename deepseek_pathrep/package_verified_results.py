@@ -195,6 +195,7 @@ def main():
         "run_cox_deduplicated.py", "test_cox_deduplicated.py",
         "package_verified_results.py", "run_cox_survival.py",
         "prompts.py", "run_deepseek_pathology.py",
+        "requirements-analysis.txt", "requirements-analysis.lock.txt",
     ):
         bundle[f"code/{name}"] = (root / "deepseek_pathrep" / name).read_bytes()
     bundle["manuscript/manuscript_revised.md"] = (
@@ -213,7 +214,10 @@ def main():
         "the original local benchmark CSVs. "
         "The `deduplicated_cox/` directory holds the new 7,247-record training manifest, "
         "887-row predictions, test manifest, and metrics including 2,000-resample "
-        "paired disjoint-cohort bootstrap. In the source repository, refit with:\n\n"
+        "paired disjoint-cohort bootstrap. The `code/` folder includes the "
+        "27-package version lock from a clean Python 3.14.3 Linux x86_64 "
+        "environment (versions pinned, wheel hashes not bundled). "
+        "In the source repository, refit with:\n\n"
         "```bash\npython deepseek_pathrep/run_cox_deduplicated.py "
         "--data-dir data --cdr-clinical data/tcga_cdr_clinical.tsv "
         "--output-dir outputs/deduplicated_cox --bootstrap-replicates 2000\n```\n\n"

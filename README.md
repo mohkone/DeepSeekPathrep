@@ -29,6 +29,8 @@ overlaps training; its scores are descriptive.
   with fixed task labels and create a checksum-manifest audit archive.
 - `deepseek_pathrep/requirements-analysis.txt`: pinned direct dependencies for
   the Cox and verification workflows.
+- `deepseek_pathrep/requirements-analysis.lock.txt`: all 27 pinned direct and
+  transitive Python packages from the clean analysis environment.
 - `deepseek_pathrep/manuscript_draft.md`: earlier manuscript, retained for
   history; do not use its superseded tables as the current results.
 
@@ -37,14 +39,25 @@ not tracked in this repository.
 
 ## Reproduce the deduplicated Cox fit
 
-Run from the repository root with Python 3 and the public input data. The
+Run from the repository root with Python 3.14.3 and the public input data. The
 DeepSeek runner's `deepseek_pathrep/requirements.txt` does **not** include
-dependencies for the Cox analysis. Install the pinned direct analysis
-dependencies (tested on Python 3.14.3):
+dependencies for the Cox analysis. For the verified Linux x86_64 environment,
+create a fresh virtual environment and install the full 27-package lock:
 
 ```bash
-python -m pip install -r deepseek_pathrep/requirements-analysis.txt
+python -m venv .venv
+.venv/bin/python -m pip install -r deepseek_pathrep/requirements-analysis.lock.txt
+.venv/bin/python -m pip check
 ```
+
+On Windows, use `.venv\Scripts\python` in place of `.venv/bin/python`; use
+that interpreter for the subsequent commands as well. The shorter
+`requirements-analysis.txt` records only the five direct dependencies and may
+resolve different transitive versions. The full lock pins all installed
+runtime package versions, but not wheel hashes, operating-system libraries,
+or the Python interpreter binary. A fresh environment with this lock
+reproduced all nine reported Cox C-indices and four bootstrap intervals to
+within \(10^{-9}\) against the saved outputs.
 
 Prepare the public [PathRep-Bench](https://github.com/rachitsaluja/PathRep-Bench)
 train, validation, and test CSVs with the repository script:
